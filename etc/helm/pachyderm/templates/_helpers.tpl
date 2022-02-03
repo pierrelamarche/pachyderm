@@ -37,7 +37,7 @@ imagePullSecrets:
 {{- end -}}
 
 {{- define "pachyderm.ingressproto" -}}
-{{- if or .Values.ingress.tls.enabled .Values.ingress.uriHttpsProtoOverride -}}
+{{- if or .Values.ingress.tls.enabled .Values.ingress.uriHttpsProtoOverride .Values.haproxy.ingress.tls -}}
 https
 {{- else -}}
 http
@@ -52,6 +52,8 @@ http
 {{- else if not .Values.ingress.enabled -}}
 {{- if eq .Values.pachd.service.type "NodePort" -}}
 http://pachd:1658
+{{- else if  .Values.haproxy.enabled -}}
+http://pachd:30658/dex
 {{- else -}}
 http://pachd:30658
 {{- end -}}
@@ -70,6 +72,8 @@ In deployments where the issuerURI is user accessible (ie. Via ingress) this wou
 {{ .Values.console.config.reactAppRuntimeIssuerURI }}
 {{- else if .Values.ingress.host -}}
 {{- printf "%s://%s" (include "pachyderm.ingressproto" .) .Values.ingress.host -}}
+{{- else if .Values.haproxy.externalHostOrIP -}}
+{{- printf "%s://%s" (include "pachyderm.ingressproto" .) .Values.haproxy.externalHostOrIP -}}
 {{- else if not .Values.ingress.enabled -}}
 http://localhost:30658
 {{- end }}
@@ -78,6 +82,8 @@ http://localhost:30658
 {{- define "pachyderm.consoleRedirectURI" -}}
 {{- if .Values.console.config.oauthRedirectURI -}}
 {{ .Values.console.config.oauthRedirectURI }}
+{{- else if .Values.haproxy.externalHostOrIP -}}
+{{- printf "%s://%s/oauth/callback/?inline=true" (include "pachyderm.ingressproto" .) .Values.haproxy.externalHostOrIP -}}
 {{- else if .Values.ingress.host -}}
 {{- printf "%s://%s/oauth/callback/?inline=true" (include "pachyderm.ingressproto" .) .Values.ingress.host -}}
 {{- else if not .Values.ingress.enabled -}}
@@ -90,6 +96,8 @@ http://localhost:4000/oauth/callback/?inline=true
 {{- define "pachyderm.pachdRedirectURI" -}}
 {{- if .Values.pachd.oauthRedirectURI -}}
 {{ .Values.pachd.oauthRedirectURI -}}
+{{- else if .Values.haproxy.externalHostOrIP -}}
+{{- printf "%s://%s/authorization-code/callback" (include "pachyderm.ingressproto" .) .Values.haproxy.externalHostOrIP -}}
 {{- else if .Values.ingress.host -}}
 {{- printf "%s://%s/authorization-code/callback" (include "pachyderm.ingressproto" .) .Values.ingress.host -}}
 {{- else if not .Values.ingress.enabled -}}
@@ -124,6 +132,8 @@ false
 {{- define "pachyderm.userAccessibleOauthIssuerHost" -}}
 {{- if .Values.oidc.userAccessibleOauthIssuerHost -}}
 {{ .Values.oidc.userAccessibleOauthIssuerHost }}
+{{- else if .Values.haproxy.externalHostOrIP -}}
+{{- printf "%s" .Values.haproxy.externalHostOrIP -}}
 {{- else if not .Values.ingress.enabled -}}
 localhost:30658
 {{- end -}}

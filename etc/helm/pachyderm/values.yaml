@@ -52,7 +52,7 @@ console:
     pullPolicy: "IfNotPresent"
     # tag is the image repo to pull from; together with repository it
     # replicates the --console-image argument to pachctl deploy.
-    tag: "825da792035ea9c2941d5e68f881485d44d99c57"
+    tag: "2.0.6-1"
   # podLabels specifies labels to add to the console pod.
   podLabels: {}
   # resources specifies the resource request and limits.
@@ -180,6 +180,67 @@ ingress:
       create: false
       crt: ""
       key: ""
+
+# ha-proxy to simplify http endpoints
+haproxy:
+  enabled: false
+  externalHostOrIP: ""
+  service:
+    type: 'LoadBalancer'
+  containerPorts:
+    http: 80
+    https: 443
+  config: |
+    global
+      log stdout format raw local0
+      maxconn 1024
+    defaults
+      mode http
+      log global
+      option httplog
+      option  http-server-close
+      option  dontlognull
+      option  redispatch
+      option  contstats
+      retries 3
+      backlog 10000
+      timeout client          25s
+      timeout connect          5s
+      timeout server          25s
+      timeout tunnel        3600s
+      timeout http-keep-alive  1s
+      timeout http-request    15s
+      timeout queue           30s
+      timeout tarpit          60s
+      default-server inter 3s rise 2 fall 3
+      option forwardfor
+
+
+    frontend web
+      bind 0.0.0.0:80
+      maxconn 10000
+      default_backend console
+      use_backend pachd-callback  if  { path_beg /authorization-code/callback }
+      use_backend pachd-dex       if  { path_beg  /dex }
+      use_backend pachd-grpc      if  { req_ver 2.0 }
+      use_backend pachd-s3        if  { hdr_beg(authorization) AWS4-HMAC-SHA256 }
+
+    backend console                      
+      server console console:4000 maxconn 10000
+
+    backend pachd-dex                    
+      server pachd pachd:30658 maxconn 10000
+
+    backend pachd-callback
+      server pachd pachd:30657 maxconn 10000
+
+    backend pachd-s3
+      server pachd pachd:30600 maxconn 10000
+
+    backend pachd-grpc          
+      server pachd pachd:30650 proto h2  check maxconn 10000        
+
+
 
 # locki-stack contains values that will be passed to the loki-stack subchart
 loki-stack:
