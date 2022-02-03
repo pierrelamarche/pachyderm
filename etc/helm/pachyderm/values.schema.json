@@ -322,9 +322,6 @@
                     "properties": {
                         "http": {
                             "type": "integer"
-                        },
-                        "https": {
-                            "type": "integer"
                         }
                     }
                 },
@@ -333,6 +330,9 @@
                 },
                 "externalHostOrIP": {
                     "type": "string"
+                },
+                "mountedSecrets": {
+                    "type": "object"
                 },
                 "service": {
                     "type": "object",

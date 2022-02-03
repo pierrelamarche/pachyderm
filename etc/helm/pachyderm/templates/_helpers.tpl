@@ -151,3 +151,13 @@ localhost:30658
     {{- fail "either oidc.upstreamIDPs or oidc.mockIDP must be set in non-LOCAL deployments" }}
 {{- end }}
 {{- end }}
+
+{{- define "pachyderm.pachctlurl" -}}
+{{- if regexMatch "^[a-z]*:[0-9]*$" .Values.haproxy.externalHostOrIP -}}
+{{ .Values.haproxy.externalHostOrIP }}
+{{- else if .Values.haproxy.mountedSecrets }}
+{{- .Values.haproxy.externalHostOrIP }}:443
+{{- else }}
+{{- .Values.haproxy.externalHostOrIP }}:8080
+{{- end }}
+{{- end }}

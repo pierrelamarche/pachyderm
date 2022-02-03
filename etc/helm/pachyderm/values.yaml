@@ -183,13 +183,20 @@ ingress:
 
 # ha-proxy to simplify http endpoints
 haproxy:
+  # enable to turn it on
   enabled: false
+  # set the externally available host or host/port. localhost:8080, myhost.domain.com
   externalHostOrIP: ""
   service:
+    # kubernetes service type. Generally LoadBalancer. If ClusterIP and using ingress, ingress must support both http1/2 on the same endpoint
     type: 'LoadBalancer'
+    # which ports to expose on the service. default is http over 8080 but can be changed to whatever. multiple ports are supported
+    # make sure the config below is listening on the right ports
   containerPorts:
-    http: 80
-    https: 443
+    http: 8080
+  # mounted secrets. can use this to pass certificates to the proxy for ssl termination.
+  mountedSecrets: {}
+  #  the default config. can be overridden with any support haproxy config. for example, adding a listener for https and cert with bind 0.0.0.0:443 ssl crt /path/to/certs
   config: |
     global
       log stdout format raw local0
@@ -217,7 +224,7 @@ haproxy:
 
 
     frontend web
-      bind 0.0.0.0:80
+      bind 0.0.0.0:8080
       maxconn 10000
       default_backend console
       use_backend pachd-callback  if  { path_beg /authorization-code/callback }
