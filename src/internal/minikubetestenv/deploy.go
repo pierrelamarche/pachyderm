@@ -151,6 +151,7 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 	}
 	helmOpts := localDeploymentWithMinioOptions(namespace, localImage)
 	if opts.Enterprise {
+		createSecretEnterpriseKeySecret(t, ctx, kubeClient, namespace)
 		helmOpts = union(helmOpts, withEnterprise(t, namespace))
 	}
 	pachAddress := getPachAddress(t)
@@ -158,7 +159,6 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 		pachAddress.Port = pachAddress.Port + opts.PortOffset
 		helmOpts = union(helmOpts, withPort(t, namespace, pachAddress.Port))
 	}
-	// TODO: SET NEW PORT IN HELM
 	require.NoError(t, f(t, helmOpts, chartPath, namespace))
 	waitForPachd(t, ctx, kubeClient, namespace, version)
 	c, err := client.NewFromPachdAddress(pachAddress)
