@@ -630,6 +630,9 @@
                         "labels": {
                             "type": "object"
                         },
+                        "port": {
+                            "type": "integer"
+                        },
                         "type": {
                             "type": "string"
                         }

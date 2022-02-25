@@ -40,12 +40,15 @@ type DeployOpts struct {
 type helmPutE func(t terraTest.TestingT, options *helm.Options, chart string, releaseName string) error
 
 func getPachAddress(t testing.TB) *grpcutil.PachdAddress {
-	cfg, err := config.Read(false, false)
+	cfg, err := config.Read(true, true)
 	require.NoError(t, err)
 	_, context, err := cfg.ActiveContext(true)
 	require.NoError(t, err)
-	address, err := grpcutil.ParsePachdAddress(context.PachdAddress)
+	address, err := client.GetUserMachineAddr(context)
 	require.NoError(t, err)
+	if address == nil {
+		address = &grpcutil.DefaultPachdAddress
+	}
 	return address
 }
 
@@ -87,6 +90,15 @@ func withEnterprise(t testing.TB, namespace string) *helm.Options {
 			// TODO: make these ports configurable to support IDP Login in parallel deployments
 			"oidc.userAccessibleOauthIssuerHost": fmt.Sprintf("%s:30658", addr.Host),
 			"ingress.host":                       fmt.Sprintf("%s:30657", addr.Host),
+		},
+	}
+}
+
+func withPort(t testing.TB, namespace string, port uint16) *helm.Options {
+	return &helm.Options{
+		KubectlOptions: &k8s.KubectlOptions{Namespace: namespace},
+		SetValues: map[string]string{
+			"pachd.service.port": fmt.Sprintf("%v", port),
 		},
 	}
 }
@@ -142,6 +154,7 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 	pachAddress := getPachAddress(t)
 	if opts.PortOffset != 0 {
 		pachAddress.Port = pachAddress.Port + opts.PortOffset
+		helmOpts = union(helmOpts, withPort(t, namespace, pachAddress.Port))
 	}
 	// TODO: SET NEW PORT IN HELM
 	require.NoError(t, f(t, helmOpts, helmChartLocalPath, namespace))

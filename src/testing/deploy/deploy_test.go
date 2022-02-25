@@ -12,6 +12,7 @@ import (
 	"github.com/pachyderm/pachyderm/v2/src/internal/require"
 	"github.com/pachyderm/pachyderm/v2/src/internal/testutil"
 	"github.com/pachyderm/pachyderm/v2/src/pfs"
+	"golang.org/x/sync/errgroup"
 )
 
 func TestDeployEnterprise(t *testing.T) {
@@ -60,15 +61,22 @@ func mockIDPLogin(t testing.TB, c *client.APIClient) {
 }
 
 func TestParallelDeployments(t *testing.T) {
-	ctx1 := context.Background()
-	c1 := minikubetestenv.AcquireCluster(t, ctx1)
-	_, err := c1.PfsAPIClient.CreateRepo(ctx1, &pfs.CreateRepoRequest{Repo: client.NewRepo("c1")})
-	require.NoError(t, err)
-
-	ctx2 := context.Background()
-	c2 := minikubetestenv.AcquireCluster(t, ctx2)
-	_, err = c2.PfsAPIClient.CreateRepo(ctx2, &pfs.CreateRepoRequest{Repo: client.NewRepo("c2")})
-	require.NoError(t, err)
+	eg, _ := errgroup.WithContext(context.Background())
+	var c1 *client.APIClient
+	var c2 *client.APIClient
+	eg.Go(func() error {
+		ctx1 := context.Background()
+		c1 = minikubetestenv.AcquireCluster(t, ctx1)
+		_, err := c1.PfsAPIClient.CreateRepo(ctx1, &pfs.CreateRepoRequest{Repo: client.NewRepo("c1")})
+		return err
+	})
+	eg.Go(func() error {
+		ctx2 := context.Background()
+		c2 = minikubetestenv.AcquireCluster(t, ctx2)
+		_, err := c2.PfsAPIClient.CreateRepo(ctx2, &pfs.CreateRepoRequest{Repo: client.NewRepo("c2")})
+		return err
+	})
+	require.NoError(t, eg.Wait())
 
 	c1List, err := c1.ListRepo()
 	require.NoError(t, err)

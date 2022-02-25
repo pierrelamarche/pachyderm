@@ -260,6 +260,7 @@ pachd:
     # type specifies the Kubernetes type of the pachd service.
     type: "ClusterIP"
     annotations: {}
+    port: 30650
     #apiGrpcPort:
     #  expose: true
     #  port: 30650
