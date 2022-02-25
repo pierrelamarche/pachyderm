@@ -18,8 +18,6 @@ const (
 	namespacePrefix = "test-cluster-"
 )
 
-var clusterPool []*client.APIClient
-
 var (
 	clusterFactory *ClusterFactory
 	setup          sync.Once

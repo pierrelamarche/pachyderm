@@ -180,6 +180,9 @@
                 "service": {
                     "type": "object",
                     "properties": {
+                        "port": {
+                            "type": "integer"
+                        },
                         "type": {
                             "type": "string"
                         }

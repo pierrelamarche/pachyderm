@@ -37,14 +37,8 @@ spec:
               key: OAUTH_CLIENT_SECRET
         {{- end}}
         {{- if .Values.enterpriseServer.enabled }}
-        # TODO: sort this out
-        {{- if eq .Values.enterpriseServer.service.type "NodePort" }}
         - name: PACH_ADDR
-          value: "grpc://pach-enterprise:1650"
-        {{- else }}
-        - name: PACH_ADDR
-          value: "grpc://pach-enterprise:30650"        
-        {{- end }}
+          value: "grpc://pach-enterprise:31650"        
         {{- end }}
         {{- if .Values.pachd.rootTokenSecretName }}    
         - name: ROOT_TOKEN

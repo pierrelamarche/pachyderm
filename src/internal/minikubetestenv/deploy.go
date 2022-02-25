@@ -144,8 +144,10 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 		})
 	}
 	version := localImage
+	chartPath := helmChartLocalPath
 	if opts.Version != "" {
 		version = opts.Version
+		chartPath = helmChartPublishedPath
 	}
 	helmOpts := localDeploymentWithMinioOptions(namespace, localImage)
 	if opts.Enterprise {
@@ -157,7 +159,7 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 		helmOpts = union(helmOpts, withPort(t, namespace, pachAddress.Port))
 	}
 	// TODO: SET NEW PORT IN HELM
-	require.NoError(t, f(t, helmOpts, helmChartLocalPath, namespace))
+	require.NoError(t, f(t, helmOpts, chartPath, namespace))
 	waitForPachd(t, ctx, kubeClient, namespace, version)
 	c, err := client.NewFromPachdAddress(pachAddress)
 	require.NoError(t, err)
