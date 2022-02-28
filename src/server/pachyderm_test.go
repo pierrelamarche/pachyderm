@@ -3352,8 +3352,7 @@ func TestPipelineEnv(t *testing.T) {
 		metav1.CreateOptions{},
 	)
 	require.NoError(t, err)
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 
 	// create repos
@@ -4181,8 +4180,7 @@ func TestLokiLogs(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration tests in short mode")
 	}
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	tu.ActivateEnterprise(t, c)
 	// create repos
@@ -4443,8 +4441,7 @@ func TestPipelineResourceRequest(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	// create repos
 	dataRepo := tu.UniqueString("TestPipelineResourceRequest")
@@ -4517,8 +4514,7 @@ func TestPipelineResourceLimit(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	// create repos
 	dataRepo := tu.UniqueString("TestPipelineResourceLimit")
@@ -4588,8 +4584,7 @@ func TestPipelineResourceLimitDefaults(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	// create repos
 	dataRepo := tu.UniqueString("TestPipelineResourceLimit")
@@ -4798,8 +4793,7 @@ func TestPodOpts(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	// create repos
 	dataRepo := tu.UniqueString("TestPodSpecOpts_data")
@@ -8666,8 +8660,7 @@ func TestPodPatchUnmarshalling(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 
 	// Create input data
@@ -8803,8 +8796,7 @@ func TestSecretsUnauthenticated(t *testing.T) {
 	defer tu.DeleteAll(t)
 
 	// Get an unauthenticated client
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	c.SetAuthToken("")
 
 	b := []byte(
@@ -9318,8 +9310,7 @@ func TestDebug(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 
 	dataRepo := tu.UniqueString("TestDebug_data")
@@ -9493,8 +9484,7 @@ func TestPipelineAutoscaling(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 
 	dataRepo := tu.UniqueString("TestPipelineAutoscaling_data")
@@ -9910,8 +9900,7 @@ func TestStandbyTransitions(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 
 	kc := tu.GetKubeClient(t)
