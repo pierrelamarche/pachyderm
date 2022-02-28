@@ -94,6 +94,7 @@ func TestUpgradeSimple(t *testing.T) {
 		},
 
 		func(t *testing.T, c *client.APIClient) {
+			testutil.AuthenticatedPachClient(t, c, upgradeSubject)
 			state, err := c.Enterprise.GetState(c.Ctx(), &enterprise.GetStateRequest{})
 			require.NoError(t, err)
 			require.Equal(t, enterprise.State_ACTIVE, state.State)
