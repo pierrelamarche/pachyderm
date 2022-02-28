@@ -2453,8 +2453,7 @@ func TestUpdatePipeline(t *testing.T) {
 		t.Skip("Skipping integration tests in short mode")
 	}
 
-	t.Parallel()
-	c := minikubetestenv.AcquireCluster(t, context.Background())
+	c := tu.GetPachClient(t)
 	require.NoError(t, c.DeleteAll())
 	// create repos and create the pipeline
 	dataRepo := tu.UniqueString("TestUpdatePipeline_data")
