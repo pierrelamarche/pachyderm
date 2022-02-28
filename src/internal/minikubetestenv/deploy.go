@@ -149,7 +149,7 @@ func putRelease(t testing.TB, ctx context.Context, namespace string, kubeClient 
 		version = opts.Version
 		chartPath = helmChartPublishedPath
 	}
-	helmOpts := localDeploymentWithMinioOptions(namespace, localImage)
+	helmOpts := localDeploymentWithMinioOptions(namespace, version)
 	if opts.Enterprise {
 		createSecretEnterpriseKeySecret(t, ctx, kubeClient, namespace)
 		helmOpts = union(helmOpts, withEnterprise(t, namespace))
