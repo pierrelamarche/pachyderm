@@ -4182,7 +4182,8 @@ func TestLokiLogs(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration tests in short mode")
 	}
-	c := tu.GetPachClient(t)
+	t.Parallel()
+	c, _ := minikubetestenv.AcquireCluster(t, context.Background())
 	require.NoError(t, c.DeleteAll())
 	tu.ActivateEnterprise(t, c)
 	// create repos
