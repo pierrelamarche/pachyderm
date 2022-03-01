@@ -180,7 +180,19 @@
                 "service": {
                     "type": "object",
                     "properties": {
-                        "port": {
+                        "apiGRPCPort": {
+                            "type": "integer"
+                        },
+                        "identityPort": {
+                            "type": "integer"
+                        },
+                        "oidcPort": {
+                            "type": "integer"
+                        },
+                        "prometheusPort": {
+                            "type": "integer"
+                        },
+                        "s3GatewayPort": {
                             "type": "integer"
                         },
                         "type": {
