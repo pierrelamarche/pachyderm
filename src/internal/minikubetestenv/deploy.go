@@ -113,7 +113,11 @@ func withPort(t testing.TB, namespace string, port uint16) *helm.Options {
 	return &helm.Options{
 		KubectlOptions: &k8s.KubectlOptions{Namespace: namespace},
 		SetValues: map[string]string{
-			"pachd.service.port": fmt.Sprintf("%v", port),
+			"pachd.service.apiGRPCPort":    fmt.Sprintf("%v", port),
+			"pachd.service.oidcPort":       fmt.Sprintf("%v", port+1),
+			"pachd.service.identityPort":   fmt.Sprintf("%v", port+2),
+			"pachd.service.s3GatewayPort":  fmt.Sprintf("%v", port+3),
+			"pachd.service.prometheusPort": fmt.Sprintf("%v", port+4),
 		},
 	}
 }

@@ -24,34 +24,34 @@ spec:
   ports:
   - name: api-grpc-port
     {{- if eq .Values.pachd.service.type "NodePort" }}
-    nodePort: {{ .Values.pachd.service.port }}
+    nodePort: {{ .Values.pachd.service.apiGRPCPort }}
     {{- end }}
-    port: {{ .Values.pachd.service.port }}
+    port: {{ .Values.pachd.service.apiGRPCPort }}
     protocol: TCP
     targetPort: api-grpc-port
   - name: oidc-port
     {{- if eq .Values.pachd.service.type "NodePort" }}
-    nodePort: {{ add .Values.pachd.service.port 7 }}
+    nodePort: {{ .Values.pachd.service.oidcPort }}
     {{- end }}
-    port: {{ add .Values.pachd.service.port 7 }}
+    port: {{ .Values.pachd.service.oidcPort }}
     targetPort: oidc-port
   - name: identity-port
     {{- if eq .Values.pachd.service.type "NodePort" }}
-    nodePort: {{ add .Values.pachd.service.port 8 }}
+    nodePort: {{ .Values.pachd.service.identityPort }}
     {{- end }}
-    port: {{ add .Values.pachd.service.port 8 }}
+    port: {{ .Values.pachd.service.identityPort }}
     targetPort: identity-port
   - name: s3gateway-port
     {{- if eq .Values.pachd.service.type "NodePort" }}
-    nodePort: {{ sub .Values.pachd.service.port 50 }}
+    nodePort: {{ .Values.pachd.service.s3GatewayPort }}
     {{- end }}
-    port: {{ sub .Values.pachd.service.port 50 }}  
+    port: {{ .Values.pachd.service.s3GatewayPort }}  
     targetPort: s3gateway-port
   - name: prom-metrics
     {{- if eq .Values.pachd.service.type "NodePort" }}
-    nodePort: {{ add .Values.pachd.service.port 6 }}
+    nodePort: {{ .Values.pachd.service.prometheusPort }}
     {{- end }}
-    port: {{ add .Values.pachd.service.port 6 }}
+    port: {{ .Values.pachd.service.prometheusPort }}
     protocol: TCP
     targetPort: prom-metrics
   selector:

@@ -261,7 +261,12 @@ pachd:
     # type specifies the Kubernetes type of the pachd service.
     type: "ClusterIP"
     annotations: {}
-    port: 30650
+    apiGRPCPort: 30650
+    prometheusPort: 30656
+    oidcPort: 30657
+    identityPort: 30658
+    s3GatewayPort: 30600
+
     #apiGrpcPort:
     #  expose: true
     #  port: 30650

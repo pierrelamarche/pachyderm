@@ -630,10 +630,22 @@
                         "annotations": {
                             "type": "object"
                         },
+                        "apiGRPCPort": {
+                            "type": "integer"
+                        },
+                        "identityPort": {
+                            "type": "integer"
+                        },
                         "labels": {
                             "type": "object"
                         },
-                        "port": {
+                        "oidcPort": {
+                            "type": "integer"
+                        },
+                        "prometheusPort": {
+                            "type": "integer"
+                        },
+                        "s3GatewayPort": {
                             "type": "integer"
                         },
                         "type": {
