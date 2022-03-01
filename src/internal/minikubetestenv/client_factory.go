@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	poolSize        = 4
+	poolSize        = 3
 	namespacePrefix = "test-cluster-"
 )
 
