@@ -88,6 +88,7 @@ func localDeploymentWithMinioOptions(namespace, image string) *helm.Options {
 		SetStrValues: map[string]string{
 			"pachd.storage.minio.signature": "",
 			"pachd.storage.minio.secure":    "false",
+			"pachd.lokiDeploy":              "true",
 		},
 	}
 }
