@@ -75,6 +75,7 @@ func localDeploymentWithMinioOptions(namespace, image string) *helm.Options {
 			"pachd.service.type":        "NodePort",
 			"pachd.image.tag":           image,
 			"pachd.clusterDeploymentID": "dev",
+			"pachd.lokiDeploy":          "true",
 
 			"pachd.storage.backend":        "MINIO",
 			"pachd.storage.minio.bucket":   "pachyderm-test",
@@ -88,7 +89,6 @@ func localDeploymentWithMinioOptions(namespace, image string) *helm.Options {
 		SetStrValues: map[string]string{
 			"pachd.storage.minio.signature": "",
 			"pachd.storage.minio.secure":    "false",
-			"pachd.lokiDeploy":              "true",
 		},
 	}
 }
