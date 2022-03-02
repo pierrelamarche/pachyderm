@@ -50,7 +50,7 @@ func (cf *ClusterFactory) acquireFreeCluster() (string, *client.APIClient) {
 func (cf *ClusterFactory) acquireNewCluster(t testing.TB) (string, *client.APIClient) {
 	cf.mu.Lock()
 	clusterIdx := len(cf.managedClusters) + 1
-	assigned := fmt.Sprintf("%s-%v", namespacePrefix, clusterIdx)
+	assigned := fmt.Sprintf("%s%v", namespacePrefix, clusterIdx)
 	cf.managedClusters[assigned] = nil // hold my place in line
 	cf.mu.Unlock()
 
